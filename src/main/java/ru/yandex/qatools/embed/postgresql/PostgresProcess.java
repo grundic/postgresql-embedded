@@ -170,7 +170,11 @@ public class PostgresProcess extends AbstractPGProcess<PostgresExecutable, Postg
             // fails
             setProcessId(getPidFromFile(pidFile()));
         }
-        runCmd(getConfig(), CreateDb, "", getConfig().storage().dbName());
+
+        final String db_name = getConfig().storage().dbName();
+        if (db_name != null) {
+            runCmd(getConfig(), CreateDb, "", getConfig().storage().dbName());
+        }
     }
 
     @Override

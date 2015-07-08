@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2011
- *   Michael Mosmann <michael@mosmann.de>
- *   Martin Jöhren <m.joehren@googlemail.com>
- *
+ * Michael Mosmann <michael@mosmann.de>
+ * Martin Jöhren <m.joehren@googlemail.com>
+ * <p>
  * with contributions from
- * 	konstantin-ba@github, Archimedes Trajano (trajano@github), Christian Bayer (chrbayer84@googlemail.com)
- *
+ * konstantin-ba@github, Archimedes Trajano (trajano@github), Christian Bayer (chrbayer84@googlemail.com)
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static de.flapdoodle.embed.process.io.file.Files.createTempFile;
+import static de.flapdoodle.embed.process.io.file.Files.forceDelete;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 
@@ -47,6 +48,8 @@ import static java.util.UUID.randomUUID;
  * (helper to initialize the DB)
  */
 class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, InitDbProcess> {
+
+    File pwFile;
 
     public InitDbProcess(Distribution distribution, PostgresConfig config, IRuntimeConfig runtimeConfig, E executable) throws IOException {
         super(distribution, config, runtimeConfig, executable);
@@ -58,7 +61,7 @@ class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, Ini
         List<String> ret = new ArrayList<>();
         ret.add(exe.executable().getAbsolutePath());
         if (getConfig().credentials() != null) {
-            final File pwFile = createTempFile(PropertyOrPlatformTempDir.defaultInstance(), "pwfile" + randomUUID());
+            pwFile = createTempFile(PropertyOrPlatformTempDir.defaultInstance(), "pwfile" + randomUUID());
             Files.write(getConfig().credentials().password(), pwFile);
             ret.addAll(asList(
                     "-A", "password",
@@ -79,5 +82,13 @@ class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, Ini
         Processors.connect(process.getReader(), logWatch);
         Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
         logWatch.waitForResult(getConfig().timeout().startupTimeout());
+    }
+
+    @Override
+    protected void cleanupInternal() {
+        super.cleanupInternal();
+        if (pwFile != null) {
+            forceDelete(pwFile);
+        }
     }
 }

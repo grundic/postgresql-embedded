@@ -31,17 +31,17 @@ public abstract class AbstractPostgresConfig<C extends AbstractPostgresConfig> e
         this(config.version, config.net(), config.storage, config.timeout(), config.credentials);
     }
 
-    public AbstractPostgresConfig(IVersion version, Net networt, Storage storage, Timeout timeout, Credentials cred) {
+    public AbstractPostgresConfig(IVersion version, Net network, Storage storage, Timeout timeout, Credentials cred) {
         super(version, new SupportConfig(Command.Postgres));
-        this.network = networt;
+        this.network = network;
         this.timeout = timeout;
         this.storage = storage;
         this.credentials = cred;
     }
 
-    public AbstractPostgresConfig(IVersion version, Net networt, Storage storage, Timeout timeout) {
+    public AbstractPostgresConfig(IVersion version, Net network, Storage storage, Timeout timeout) {
         super(version, new SupportConfig(Command.Postgres));
-        this.network = networt;
+        this.network = network;
         this.timeout = timeout;
         this.storage = storage;
         this.credentials = null;

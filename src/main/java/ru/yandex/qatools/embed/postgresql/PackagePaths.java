@@ -41,14 +41,8 @@ public class PackagePaths implements IPackageResolver {
                 throw new IllegalArgumentException("Unknown Platform "
                         + distribution.getPlatform());
         }
-        try {
-            File tmpDir = createTempDir(PropertyOrPlatformTempDir.defaultInstance(), "embedpostgres");
-            return FileSet.builder()
-                    .addEntry(FileType.Executable, tmpDir.getPath(), "pgsql/bin/" + cmdPattern)
-                    .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        return FileSet.builder().addEntry(FileType.Executable, null, "pgsql/bin/" + cmdPattern).build();
     }
 
     @Override

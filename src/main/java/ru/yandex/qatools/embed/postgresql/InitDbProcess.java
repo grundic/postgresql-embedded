@@ -35,6 +35,7 @@ import ru.yandex.qatools.embed.postgresql.config.PostgresConfig;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -81,7 +82,7 @@ class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, Ini
         ProcessOutput outputConfig = runtimeConfig.getProcessOutput();
         LogWatchStreamProcessor logWatch = new LogWatchStreamProcessor(
                 "database system is ready to accept connections",
-                new HashSet<>(asList("[initdb error]")), StreamToLineProcessor.wrap(outputConfig.getOutput()));
+                new HashSet<>(Collections.singletonList("[initdb error]")), StreamToLineProcessor.wrap(outputConfig.getOutput()));
         Processors.connect(process.getReader(), logWatch);
         Processors.connect(process.getError(), StreamToLineProcessor.wrap(outputConfig.getError()));
         logWatch.waitForResult(getConfig().timeout().startupTimeout());

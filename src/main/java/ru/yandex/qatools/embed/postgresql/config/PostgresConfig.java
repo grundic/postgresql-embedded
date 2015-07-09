@@ -27,6 +27,10 @@ public class PostgresConfig extends AbstractPostgresConfig<PostgresConfig> {
         super(version, network, storage, timeout, cred);
     }
 
+    public PostgresConfig(IVersion version, Net network, Storage storage, Locale locale, Timeout timeout, Credentials cred) {
+        super(version, network, storage, locale, timeout, cred);
+    }
+
     public PostgresConfig(IVersion version, Net network, Storage storage, Timeout timeout) {
         super(version, network, storage, timeout);
     }

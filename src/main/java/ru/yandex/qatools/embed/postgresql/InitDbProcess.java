@@ -63,11 +63,14 @@ class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, Ini
         if (getConfig().credentials() != null) {
             pwFile = createTempFile(PropertyOrPlatformTempDir.defaultInstance(), "pwfile" + randomUUID());
             Files.write(getConfig().credentials().password(), pwFile);
-            ret.addAll(asList(
-                    "-A", "password",
-                    "-U", getConfig().credentials().username(),
-                    "--pwfile=" + pwFile.getAbsolutePath()
-            ));
+            ret.addAll(
+                    asList(
+                            "-A", "password",
+                            "-U", getConfig().credentials().username(),
+                            "--pwfile=" + pwFile.getAbsolutePath()
+                    )
+            );
+            ret.addAll(getConfig().locale().buildCommandLine());
         }
         ret.add(config.storage().dbDir().getAbsolutePath());
         return ret;

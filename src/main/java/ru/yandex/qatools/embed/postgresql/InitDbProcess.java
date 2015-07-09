@@ -70,8 +70,8 @@ class InitDbProcess<E extends InitDbExecutable> extends AbstractPGProcess<E, Ini
                             "--pwfile=" + pwFile.getAbsolutePath()
                     )
             );
-            ret.addAll(getConfig().locale().buildCommandLine());
         }
+        ret.addAll(getConfig().locale().buildCommandLine());
         ret.add(config.storage().dbDir().getAbsolutePath());
         return ret;
     }
